@@ -18,7 +18,7 @@ const useNavbar = () => {
 
   // Menu API çağrısı
   const menuApi = useApi('GET', '/menu', null, true);
-
+  
   useEffect(() => {
     const processMenuData = () => {
       if (!menuApi.data?.status === 'success') return;

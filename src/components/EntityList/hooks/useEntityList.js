@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import useApi from '../../../shared/hooks/useApi';
-import successToast from '../../../shared/toasts/successToast';
 import errorToast from '../../../shared/toasts/errorToast';
+import successToast from './../../../shared/toasts/successToast';
 
 export const useEntityList = () => {
   const { root } = useParams();
 
+  const [dataFields, setDataFields] = useState([]);
   const [columnVisibilty, setColumnVisibility] = useState({});
 
   // ViewSettings API çağrısı
@@ -17,7 +18,6 @@ export const useEntityList = () => {
 
   // Kolon genişliği değiştirme API çağrısı
   const columnWidthApi = useApi('PUT', '/viewsettings', null, false);
-
 
   const generateListUrl = (fields) => {
     if (!fields?.length || !root) return null;
@@ -47,28 +47,31 @@ export const useEntityList = () => {
     }
   };
 
-  
+
 
   const handleChangeColumnWidth = async (width, fieldName) => {
     try {
-      const currentField = (viewSettingsApi.data?.data?.regions?.[0]?.fields || []).find(field => field.name === fieldName);
-      if (!currentField) {
+      let taregtFields = [...dataFields];
+
+      const currentFieldIndex = dataFields.findIndex(field => field.name == fieldName);
+      taregtFields[currentFieldIndex].width = width;
+      setDataFields(taregtFields);
+
+
+      if (currentFieldIndex == -1) {
         errorToast('Belə sahə tapılmadı!');
         return;
       }
-
+      
       const requestBody = {
-        fields: [{ viewFieldId: currentField.id, width }]
+        fields: [{ viewFieldId: taregtFields[currentFieldIndex].id, width }]
       };
 
-      columnWidthApi.requestData = requestBody;
-      await columnWidthApi.fetchData();
+      successToast('Dəyişikliklər yadda saxlanıldı!')
 
-      if (columnWidthApi.data?.status === 'success') {
-        successToast("Dəyişiklik uğurla yadda saxlanıldı.");
-      }
+      await columnWidthApi.refetch(null, requestBody);
     } catch (error) {
-      errorToast('Xəta baş verdi!');
+      errorToast(error.message);
     }
   };
 
@@ -80,6 +83,7 @@ export const useEntityList = () => {
     if (!root) return;
     viewSettingsApi.resetData();
     listApi.resetData();
+    setDataFields([]);
     setColumnVisibility({});
   }, [root]);
 
@@ -90,6 +94,7 @@ export const useEntityList = () => {
 
       const fields = viewSettingsApi.data.data?.regions?.[0]?.fields || [];
       if (!fields.length) return;
+      setDataFields(fields);
 
       let targetColumnVisibilty = {};
       fields.forEach((field) => {
@@ -103,7 +108,7 @@ export const useEntityList = () => {
     if (viewSettingsApi.data) {
       processViewSettings();
     }
-    
+
   }, [viewSettingsApi.data]);
 
 
@@ -113,7 +118,7 @@ export const useEntityList = () => {
     columnWidthApi.data?.status === 'error';
 
   return {
-    fields: viewSettingsApi.data?.data?.regions?.[0]?.fields || [],
+    fields: dataFields,
     list: Array.isArray(listApi.data?.data) ? listApi.data.data : [],
     columnVisibilty,
     handleChangeColumnWidth,

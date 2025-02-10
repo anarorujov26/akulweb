@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 
 const warningToast = (message) => {
     toast.warn(message, {
-        position: "bottom-left",
+        position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: false,

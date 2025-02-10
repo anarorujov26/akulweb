@@ -32,6 +32,7 @@ const useApi = (method, initialUrl = null, initialRequestData = null, autoFetch 
             const url = overrideUrl !== null ? overrideUrl : initialUrl;
 
             if (!url) throw new Error("URL is required");
+            
 
             switch (method.toUpperCase()) {
                 case "GET":
