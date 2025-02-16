@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CircularProgress } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { formatPrice } from '../../../services/formatPrice';
 
-const EntityListGrid = ({ fields, list, columnVisibilty, onColumnWidthChange, isLoading }) => {
+const EntityListGrid = ({fields,list,columnVisibilty,handleChangeColumnWidth,isLoading}) => {
 
   const columns = fields.map(field => ({
     field: field.name,
@@ -23,7 +23,6 @@ const EntityListGrid = ({ fields, list, columnVisibilty, onColumnWidthChange, is
     return row;
   })
 
-
   if (isLoading || !fields[0]) {
     return (
       <div style={{
@@ -42,7 +41,7 @@ const EntityListGrid = ({ fields, list, columnVisibilty, onColumnWidthChange, is
     <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
         getRowId={(row) => row.id}
-        onColumnWidthChange={(response) => onColumnWidthChange(response.width, response.colDef.field)}
+        onColumnWidthChange={(response) => handleChangeColumnWidth(response.width, response.colDef.field)}
         rows={rows}
         columns={columns}
         pageSize={5}

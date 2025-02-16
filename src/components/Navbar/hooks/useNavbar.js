@@ -4,10 +4,12 @@ import useApi from '../../../shared/hooks/useApi';
 import useCommon from '../../../shared/context/useCommon';
 
 const useNavbar = () => {
+
   const parentsStore = useCommon((state) => state.setParents);
   const childsStore = useCommon((state) => state.setChilds);
   const parents = useCommon((state) => state.parents);
   const childs = useCommon((state) => state.childs);
+
 
   const navigate = useNavigate();
   
@@ -17,15 +19,14 @@ const useNavbar = () => {
   const [selectedChildId, setSelectedChildId] = useState(null);
 
   // Menu API çağrısı
-  const menuApi = useApi('GET', '/menu', null, true);
-  
+  const menuApi = useApi('GET', '/menu', true);
+
   useEffect(() => {
     const processMenuData = () => {
       if (!menuApi.data?.status === 'success') return;
-
       const list = Array.isArray(menuApi.data.data) ? menuApi.data.data : [];
       const parentList = list.filter(item => item.parentId === 0 && item.id !== 500);
-      
+
       if (parentList.length > 0) {
         const childElements = {};
         parentList.forEach(element => {
@@ -45,8 +46,8 @@ const useNavbar = () => {
 
           const firstChild = firstParentChildren[0];
           if (firstChild?.root) {
-            navigate('/list/' + firstChild.root, { 
-              state: { ...firstChild } 
+            navigate('/list/' + firstChild.root, {
+              state: { ...firstChild }
             });
           }
         }
@@ -71,9 +72,9 @@ const useNavbar = () => {
     setSelectedChildId(selectedParent.id);
     setValue(newValue);
     setChildValue(0);
-    
-    navigate(`/list/${firstChild.root}`, { 
-      state: { ...firstChild } 
+
+    navigate(`/list/${firstChild.root}`, {
+      state: { ...firstChild }
     });
   };
 
@@ -85,8 +86,8 @@ const useNavbar = () => {
     if (!selectedChild?.root) return;
 
     setChildValue(newValue);
-    navigate(`/list/${selectedChild.root}`, { 
-      state: { ...selectedChild } 
+    navigate(`/list/${selectedChild.root}`, {
+      state: { ...selectedChild }
     });
   };
 

@@ -5,11 +5,10 @@ import useCommon from './shared/context/useCommon';
 import { ToastContainer } from 'react-toastify';
 import Navbar from './components/Navbar/Navbar';
 
-
 function App() {
 
   const childs = useCommon(state => state.childs);
-  const [authToken, setAuthToken] = useState(localStorage.getItem('token'))
+  const [authToken, setAuthToken] = useState(localStorage.getItem('token'));
   
   function controllerToken() {
     if (localStorage.getItem('token') == null) {

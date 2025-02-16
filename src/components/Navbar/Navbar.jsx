@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppBar, Container, Toolbar, useMediaQuery } from '@mui/material';
 import NavbarLogo from './components/NavbarLogo';
 import NavbarTabs from './components/NavbarTabs';
 import NavbarUserMenu from './components/NavbarUserMenu';
 import NavbarChildTabs from './components/NavbarChildTabs';
 import useNavbar from './hooks/useNavbar';
+import useCommon from '../../shared/context/useCommon';
 
 const Navbar = () => {
   const isSmallScreen = useMediaQuery("(max-width: 900px)");
+
+  const parents = useCommon((state) => state.parents);
+  const childs = useCommon((state) => state.childs);
+  
   const {
-    parents,
-    childs,
     value,
     childValue,
     anchorEl,
@@ -21,7 +24,7 @@ const Navbar = () => {
     handleMenuClose,
     handleExit
   } = useNavbar();
-  
+
   return (
     <AppBar position="static" sx={{ backgroundColor: "#092332", overflow: "hidden" }}>
       <Container disableGutters maxWidth={false}>

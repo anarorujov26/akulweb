@@ -3,7 +3,8 @@ import { Box, Button, CircularProgress } from '@mui/material';
 import DynamicIcon from '../../../shared/components/DynamicIcon';
 import DraggableMenu from '../../../shared/components/DraggableMenu';
 
-const EntityListControls = ({ fields, onChangeColumn, isLoading }) => {
+const EntityListControls = ({fields,handleChangeColumn,isLoading}) => {
+
   return (
     <Box sx={{
       display: 'flex',
@@ -26,7 +27,7 @@ const EntityListControls = ({ fields, onChangeColumn, isLoading }) => {
         <DynamicIcon name={'Add'} sx={{ fontSize: 18, mr: 1 }} />
         Yeni Yarat
       </Button>
-      
+
       <Button
         variant="outlined"
         color="secondary"
@@ -45,7 +46,7 @@ const EntityListControls = ({ fields, onChangeColumn, isLoading }) => {
               ...field
             }
           }).filter(x => x !== false)}
-          onChange={onChangeColumn}
+          onChange={handleChangeColumn}
         />
       )}
     </Box>
