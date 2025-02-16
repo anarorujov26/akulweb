@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { AppBar, Container, Toolbar, useMediaQuery } from '@mui/material';
 import NavbarLogo from './components/NavbarLogo';
 import NavbarTabs from './components/NavbarTabs';

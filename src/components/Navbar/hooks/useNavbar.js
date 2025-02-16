@@ -43,13 +43,6 @@ const useNavbar = () => {
           setSelectedChildId(firstParent.id);
           setValue(0);
           setChildValue(0);
-
-          const firstChild = firstParentChildren[0];
-          if (firstChild?.root) {
-            navigate('/list/' + firstChild.root, {
-              state: { ...firstChild }
-            });
-          }
         }
       }
     };

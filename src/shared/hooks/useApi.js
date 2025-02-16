@@ -13,12 +13,12 @@ const useApi = (method = "get", initialUrl = "", setup = false) => {
     }
 
     const fetchData = useCallback(async (fetchUrl = initialUrl, params = null) => {
-
         const finalUrl = fetchUrl || initialUrl;
         if (!finalUrl) return;
-        
+
         setLoading(true);
         setError(null);
+
         try {
             let response;
             if (method.toLowerCase() === "get") {
@@ -30,9 +30,13 @@ const useApi = (method = "get", initialUrl = "", setup = false) => {
             } else if (method.toLowerCase() === "delete") {
                 response = await apiService.delete(finalUrl, { data: params });
             }
+
             setData(response);
+            return { data: response, error: null }; // Əgər error null dursa bu zaman bu proses uğurludur deməkdir!
+
         } catch (err) {
             setError(err.message);
+            return { data: null, error: err.message }; // Əgər error doludursa buzamanda serverden xəta gəldi deməkdir!
         } finally {
             setLoading(false);
         }
@@ -42,8 +46,7 @@ const useApi = (method = "get", initialUrl = "", setup = false) => {
         if (setup) { fetchData() }
     }, [setup])
 
-
-    return { data, loading, error, refetch: fetchData,reset };
+    return { data, loading, error, refetch: fetchData, reset };
 };
 
 export default useApi;

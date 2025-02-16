@@ -4,6 +4,7 @@ import DynamicIcon from '../../../shared/components/DynamicIcon';
 
 const NavbarTabs = ({ parents, value, onChange, isSmallScreen }) => {
   if (parents.length === 0) {
+    
     return (
       <Box sx={{ display: "flex", gap: 1, padding: 1, paddingLeft: 2 }}>
         {[...Array(5)].map((_, i) => (
