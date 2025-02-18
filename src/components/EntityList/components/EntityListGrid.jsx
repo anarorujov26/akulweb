@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, {} from 'react';
 import { CircularProgress } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { formatPrice } from '../../../services/formatPrice';
 
-const EntityListGrid = ({fields,list,columnVisibilty,handleChangeColumnWidth,isLoading}) => {
+const EntityListGrid = ({fields,list,columnVisibilty,handleChangeColumnWidth,isLoading,onRowClick}) => {
 
   const columns = fields.map(field => ({
     field: field.name,
@@ -66,6 +66,7 @@ const EntityListGrid = ({fields,list,columnVisibilty,handleChangeColumnWidth,isL
           }
         }}
         disableColumnMenu
+        onRowClick={onRowClick}
       />
     </div>
   );

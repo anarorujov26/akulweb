@@ -1,25 +1,28 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useApi from '../../../shared/hooks/useApi';
 import { useEffect, useState } from 'react';
 import successToast from './../../../shared/toasts/successToast';
+import useGetRootByMenu from '../../../shared/hooks/useGetRootByMenu';
 
 export const useEntityList = () => {
   const { root } = useParams();
   const { state } = useLocation();
+  const navigate = useNavigate();
 
   const [fields, setFields] = useState([]);
   const [columnVisibilty, setColumnVisibilty] = useState({});
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-
+  
   const viewSettingsApi = useApi('GET', `/viewsettings?name=${root}list`, false);
   const productsData = useApi('GET', null, false);
   const viewSettingsUpdate = useApi('PUT', '/viewsettings', false);
+  const getRootByMenu = useGetRootByMenu();
 
 
   async function FETCH_DATA() {
-
+    
     let fieldsList = viewSettingsApi.data?.data.regions[0]?.fields;
     let exFields = fieldsList.map(element => (element.name)).join(',');
     let url = `/${root}?ex_fields=${exFields}`
@@ -34,7 +37,6 @@ export const useEntityList = () => {
       acc[rel.name] = rel.show == 1;
       return acc;
     }, {});
-
 
     setColumnVisibilty(targetColumnVisibilty);
     setFields(viewSettingsApi.data?.data.regions[0]?.fields);
@@ -72,7 +74,18 @@ export const useEntityList = () => {
       if (response.error == null) {
         successToast('Yadda saxlanıldı!')
       }
+
     }
+  }
+
+  const onRowClick = (event) => {
+    const state = getRootByMenu.refetch();
+    navigate(`/${state.type}`,{
+      state:{
+        thisId:event.id,
+        ...state
+      }
+    })
   }
 
   useEffect(() => {
@@ -96,8 +109,9 @@ export const useEntityList = () => {
     columnVisibilty: columnVisibilty,
     handleChangeColumnWidth,
     handleChangeColumn,
+    onRowClick,
     isLoading: isLoading,
-    error: error
+    error: error,
   };
 };
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useApi from '../../../shared/hooks/useApi';
 import useCommon from '../../../shared/context/useCommon';
 
@@ -9,9 +9,10 @@ const useNavbar = () => {
   const childsStore = useCommon((state) => state.setChilds);
   const parents = useCommon((state) => state.parents);
   const childs = useCommon((state) => state.childs);
-
+  const setMenu = useCommon((state) => state.setMenu);
 
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [value, setValue] = useState(0);
   const [childValue, setChildValue] = useState(0);
@@ -25,6 +26,7 @@ const useNavbar = () => {
     const processMenuData = () => {
       if (!menuApi.data?.status === 'success') return;
       const list = Array.isArray(menuApi.data.data) ? menuApi.data.data : [];
+      setMenu(list);
       const parentList = list.filter(item => item.parentId === 0 && item.id !== 500);
 
       if (parentList.length > 0) {
@@ -52,6 +54,37 @@ const useNavbar = () => {
     }
   }, [menuApi.data]);
 
+  useEffect(() => {
+    if (!menuApi.data || parents.length === 0) return;
+
+    const currentPath = location.pathname;
+    const root = currentPath.split('/').pop();
+
+    // Önce child tab'ı bul
+    let foundParentIndex = -1;
+    let foundChildIndex = -1;
+
+    parents.some((parent, parentIndex) => {
+      const parentChildren = childs[parent.id] || [];
+      const childIndex = parentChildren.findIndex(child => child.root === root);
+      
+      if (childIndex !== -1) {
+        foundParentIndex = parentIndex;
+        foundChildIndex = childIndex;
+        return true;
+      }
+      return false;
+    });
+
+    // Eğer eşleşen bir tab bulunduysa, state'i güncelle
+    if (foundParentIndex !== -1 && foundChildIndex !== -1) {
+      const parent = parents[foundParentIndex];
+      setSelectedChildId(parent.id);
+      setValue(foundParentIndex);
+      setChildValue(foundChildIndex);
+    }
+  }, [location.pathname, menuApi.data, parents, childs]);
+
   const handleChange = (event, newValue) => {
     const selectedParent = parents[newValue];
     if (!selectedParent) return;
@@ -66,9 +99,7 @@ const useNavbar = () => {
     setValue(newValue);
     setChildValue(0);
 
-    navigate(`/list/${firstChild.root}`, {
-      state: { ...firstChild }
-    });
+    navigate(`/list/${firstChild.root}`);
   };
 
   const handleChangeChild = (event, newValue) => {
@@ -79,9 +110,7 @@ const useNavbar = () => {
     if (!selectedChild?.root) return;
 
     setChildValue(newValue);
-    navigate(`/list/${selectedChild.root}`, {
-      state: { ...selectedChild }
-    });
+    navigate(`/list/${selectedChild.root}`);
   };
 
   const handleMenuOpen = (event) => {
@@ -99,7 +128,7 @@ const useNavbar = () => {
   };
 
   const hasError = menuApi.data?.status === 'error';
-
+  
   return {
     parents,
     childs,

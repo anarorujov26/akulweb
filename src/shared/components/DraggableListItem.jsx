@@ -1,6 +1,7 @@
 import React from 'react';
 import { ListItem, ListItemIcon, Checkbox, ListItemText, Divider } from "@mui/material";
 import { Draggable } from "react-beautiful-dnd";
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 const DraggableListItem = ({ item, index, onToggle, itemsLength }) => (
   <>
@@ -11,29 +12,50 @@ const DraggableListItem = ({ item, index, onToggle, itemsLength }) => (
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           sx={{
-            height: 30,
-            borderRadius: 2,
-            "&:hover": {
-              backgroundColor: "#e8f5e9",
-              borderRadius: 0,
+            height: 40,
+            px: 1.5,
+            '&:hover': {
+              backgroundColor: 'rgba(9, 35, 50, 0.04)',
             },
           }}
         >
-          <ListItemIcon sx={{ minWidth: 30, fontSize: 18 }}>
-            <Checkbox checked={item.show} onChange={() => onToggle(item.name)} size="small" />
+          <ListItemIcon sx={{ minWidth: 36, color: '#64748b' }}>
+            <DragIndicatorIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemIcon sx={{ minWidth: 36 }}>
+            <Checkbox 
+              checked={item.show} 
+              onChange={() => onToggle(item.name)} 
+              size="small"
+              sx={{
+                color: '#94a3b8',
+                '&.Mui-checked': {
+                  color: '#0f766e',
+                }
+              }}
+            />
           </ListItemIcon>
           <ListItemText 
-            primary={item.name} 
-            sx={{
-              fontSize: 14,
-              lineHeight: "16px",
-              marginRight: 2,
+            primary={item.title || item.name}
+            primaryTypographyProps={{
+              sx: {
+                fontSize: '0.875rem',
+                color: '#334155',
+                fontWeight: 400
+              }
             }}
           />
         </ListItem>
       )}
     </Draggable>
-    {index < itemsLength - 1 && <Divider sx={{ marginY: 0, backgroundColor: "#fbfbfb" }} />}
+    {index < itemsLength - 1 && (
+      <Divider 
+        sx={{ 
+          my: 0.5,
+          borderColor: '#f1f5f9'
+        }} 
+      />
+    )}
   </>
 );
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Menu } from "@mui/material";
-import HoverIconButton from './HoverIconButton';
+import { Menu, Button } from "@mui/material";
+import DynamicIcon from './DynamicIcon';
 import DraggableList from './DraggableList';
 
 /**
@@ -77,18 +77,47 @@ const DraggableMenu = ({ list, onChange }) => {
 
   return (
     <>
-      <HoverIconButton
-        color='success'
-        icon={'Settings'}
-        hoverIcon={'ArrowRight'}
-        divider={true}
+      <Button
+        variant="outlined"
+        startIcon={<DynamicIcon name={'Settings'} sx={{ fontSize: 18 }} />}
         onClick={handleClick}
-      />
+        sx={{
+          height: '40px',
+          px: 2.5,
+          backgroundColor: 'rgba(9, 35, 50, 0.05)',
+          color: '#092332',
+          borderRadius: '6px',
+          textTransform: 'none',
+          fontSize: '0.875rem',
+          fontWeight: 500,
+          border: 'none',
+          '&:hover': {
+            backgroundColor: 'rgba(9, 35, 50, 0.1)',
+            border: 'none'
+          }
+        }}
+      >
+        Sütunlar
+      </Button>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        sx={{ padding: 0, boxShadow: 3 }}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            mt: 1,
+            minWidth: 200,
+            backgroundColor: '#ffffff',
+            border: '1px solid #edf2f7',
+            borderRadius: '8px',
+            '& .MuiList-root': {
+              padding: '8px 0'
+            }
+          }
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <DraggableList
           items={items}
